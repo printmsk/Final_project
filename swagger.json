@@ -1,0 +1,350 @@
+{
+    "swagger": "2.0",
+    "info": {
+    "version": "1.0.0", 
+    "title": "My Final Project",
+    "description": "My customised implementation of Azure Comupter Vision API",
+    "license": {
+    "name": "MIT",
+    "url": "https://opensource.org/licenses/MIT"
+    }
+    },
+    "host": "localhost:3001",
+    "basePath": "/v1",
+    "tags": [
+    {
+    "name": "Computer Vision",
+    "description": "API for using Computer Vision service in the Azure cloud"
+    }
+    ],
+    "schemes": [
+    "http"
+    ],
+    "paths": {
+        "/imageCategory": {
+        "post": {
+        "tags": [
+        "categories"
+        ],
+        "summary": "A successful request will return a JSON response that contains the list of categories related to the picture whose URL is posted in body, along with a confidence score that varies from 0 to 1. If any error occurs then the response contains an error status code and message to make the user understand what went wrong",
+        "parameters":[
+            {
+                "name": "url",
+                "in": "body",
+                "description": "url for the image to be analysied, supported types are JPG, PNG, GIF, BMP.",
+                "required": true,
+                "schema":{
+                    "type": "object",
+                    "properties":{
+                        "url":{
+                            "type":"string",
+                            "example":"https://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg"
+                        }
+                    }
+                }
+                
+              }
+        ], 
+        "responses": {
+        "200": {
+        "description": "List of all categories along with their score",
+        "schema": {
+            "$ref": "#/definitions/categories"
+        }
+        },
+        "default":{
+            "description":"Error occured",
+            "schema":{
+                "$ref":"#/definitions/error"
+            }
+        }
+        
+   }
+        
+        
+        }
+        },
+        "/imageTags":{
+         "post":{
+             "tags":[
+                 "tags"
+             ],
+             "summary":"A successful request will send a JSON response that contains an array of the tags for the image whose url is sent in the body of the request. If an error occurs then an error message along with status code will be sent as response to help the user identify what wwent wrong",
+             "parameters":[
+                {
+                    "name": "url",
+                    "in": "body",
+                    "description": "url for the image to be analysied",
+                    "required": true,
+                    "schema":{
+                        "type": "object",
+                        "properties":{
+                            "url":{
+                                "type":"string",
+                                "example":"https://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg"
+                            }
+                        }
+                    }
+                  }
+            ],
+             "responses":{
+                 "200":{
+                     "description":"List of all tags related to the image",
+                     "schema":{
+                        "$ref":"#/definitions/tags"
+                      }
+                     },
+                    "default":{
+                        "description":"Error occured",
+                        "schema":{
+                            "$ref":"#/definitions/error"
+                        }
+                    }
+                }
+                 
+             }
+         },
+        
+        "/detectObjects":{
+            "post":{
+                "tags":[
+                    "objects"
+                ],
+                "summary":"A successful request will send a JSON response that Contains the list of all detected objects in the image provided. If an error occurs an error message along with the status code will be sent as response to help the user identity what went wrong",
+                "parameters":[
+                    {
+                        "name": "url",
+                        "in": "body",
+                        "description": "url for the image to be analysied",
+                        "required": true,
+                        "schema":{
+                            "type": "object",
+                            "properties":{
+                                "url":{
+                                    "type":"string",
+                                    "example":"https://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg"
+                                }
+                            }
+                        }
+                      }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"List of all objects detected in the image",
+                        "schema":{
+                            "$ref":"#/definitions/detectObjects"
+                        }
+                    },
+                     "default":{
+                         "description":"Error occured",
+                         "schema":{
+                             "$ref":"#/definitions/error"
+                         }
+                     }
+                    
+
+                }
+            }
+        },
+        "/read":{
+            "post":{
+                "tags":[
+                    "text from the image"
+                ],
+                "summary":"Successful request will send a JSON response with the printed text from the image along with the boundaries in which the text is found. If an error occurs then an error message along with the statuscode of the error will sent as response",
+                "parameters":[{
+                    "name":"url",
+                    "in":"body",
+                    "dexcription":"url for the image to be analysied",
+                    "required":true,
+                    "schema":{
+                        "type":"object",
+                        "properties":{
+                            "url":{
+                                "type":"string",
+                                "example":"https://moderatorsampleimages.blob.core.windows.net/samples/sample2.jpg"
+                            }
+                        }
+                    }
+                }   
+                ],
+                "responses":{
+                    "200":{
+                        "description":"request successful",
+                        "schema":{
+                            "type":"array",
+                            "items":{
+                                "$ref":"#/definitions/read"
+                            }
+                        }
+                    },
+                    "default":{
+                        "description":"Error occured",
+                        "schema":{
+                            "$ref":"#/definitions/error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+        "definitions": {
+            "categories": {
+            "type": "array",
+            "items": {
+                "$ref":"#/definitions/category"
+            }
+        },
+        "category":{
+            "type":"object",
+            "properties":{
+                "name": {
+                    "type": "string",
+                    "example":"outdoor_wa"
+                    },
+                    "score": {
+                    "type": "number",
+                    "example":0.99922376
+               }
+            }
+
+        },
+        "tags":{
+            "type":"array",
+            "items":{
+                "type":"object",
+                "properties":{
+                    "name":{
+                        "type":"string",
+                        "example":"nature"
+                    },
+                    "confidence":{
+                        "type":"number",
+                        "example":0.99999999
+                    }
+                }
+            }
+        },
+        "detectObjects":{
+            "type":"array",
+            "items":{
+                "type":"object",
+                "properties":{
+                    "rectangle":{
+                        "type":"object",
+                        "properties":{
+                            "x":{
+                                "type":"number",
+                                "example":25
+                            },
+                            "y":{
+                                "type":"number",
+                                "example":25
+                            },
+                            "w":{
+                                "type":"number",
+                                "example":25
+                            },
+                            "h":{
+                                "type":"number",
+                                "example":25
+                            }
+                        }
+                    },
+                    "object":{
+                        "type":"string",
+                        "example":"fountain"
+                    },
+                    "confidence":{
+                        "type":"number",
+                        "example":0.561
+                    }
+                }
+            }
+        },
+        "read":{
+            "type":"object",
+            "properties":{
+                "page":{
+                    "type":"integer",
+                    "example":1
+                },
+                "language":{
+                    "type":"string",
+                    "example":"en"
+                },
+                "angle":{
+                    "type":"number",
+                    "example":-0.1234
+                },
+                "width":{
+                    "type":"integer",
+                    "example":1500
+                },
+                "height":{
+                    "type":"integer",
+                    "example":1500
+                },
+                "unit":{
+                    "type":"string",
+                    "example":"pixel"
+                },
+                "lines":{
+                    "type":"array",
+                    "items":{
+                        "$ref":"#/definitions/line"
+                    }
+                }
+
+            }
+
+        },
+        "box":{
+            "type":"array",
+            "items":{
+                "type":"integer"
+            }
+        },
+        "line":{
+            "type":"object",
+            "properties":{
+                "boundingBox":{
+                    "$ref":"#/definitions/box"
+                },
+                "text":{
+                    "type":"string"
+                },
+                "words":{
+                    "type":"array",
+                    "items":{
+                        "type":"object",
+                        "properties":{
+                            "boundingBox":{
+                                "$ref":"#/definitions/box"
+                            }
+                        },
+                        "text":"string",
+                        "confidence":"number"
+                    }
+                }
+            }
+        },
+        "error":{
+            "type":"object",
+            "properties":{
+                "message":{
+                    "type":"string"
+                },
+                "statusCode":{
+                    "type":"number"
+                }
+            }
+        }
+            },
+    "consumes": [
+    "application/json"
+    ],
+    "produces": [
+    "application/json"
+    ]
+    }
